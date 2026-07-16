@@ -1,1 +1,146 @@
-<h1>Cadastro de Usuário</h1>
+<div class="container mt-5">
+
+    <div class="card shadow">
+
+        <div class="card-header">
+
+            <h3>
+
+                {{ modoEdicao ? 'Editar Usuário' : 'Cadastrar Usuário' }}
+
+            </h3>
+
+        </div>
+
+        <div class="card-body">
+
+            <form [formGroup]="formulario">
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Nome
+
+                    </label>
+
+                    <input
+                        class="form-control"
+                        formControlName="nome">
+
+                    @if(campoInvalido('nome')){
+
+                        <small class="text-danger">
+
+                            Informe um nome com pelo menos 3 caracteres.
+
+                        </small>
+
+                    }
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        CPF
+
+                    </label>
+
+                    <input
+                        class="form-control"
+                        mask="000.000.000-00"
+                        formControlName="cpf"
+                        [readonly]="modoEdicao">
+
+                    @if(campoInvalido('cpf')){
+
+                        <small class="text-danger">
+
+                            Informe um CPF válido.
+
+                        </small>
+
+                    }
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        Data de Nascimento
+
+                    </label>
+
+                    <input
+                        class="form-control"
+                        mask="00/00/0000"
+                        formControlName="dataNascimento">
+
+                    @if(campoInvalido('dataNascimento')){
+
+                        <small class="text-danger">
+
+                            Informe a data de nascimento.
+
+                        </small>
+
+                    }
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+
+                        E-mail
+
+                    </label>
+
+                    <input
+                        type="email"
+                        class="form-control"
+                        formControlName="email">
+
+                    @if(campoInvalido('email')){
+
+                        <small class="text-danger">
+
+                            Informe um e-mail válido.
+
+                        </small>
+
+                    }
+
+                </div>
+
+                <div class="d-flex gap-2">
+                    <button
+                        type="button"
+                        class="btn btn-primary"
+                        (click)="salvar()">
+
+                        Salvar
+
+                    </button>
+
+                    <button
+                        type="button"
+                        class="btn btn-secondary"
+                        (click)="cancelar()">
+
+                        Cancelar
+
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>

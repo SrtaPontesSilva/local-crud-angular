@@ -1,1 +1,207 @@
-<h1>Lista de Usuários</h1>
+<div class="container mt-5">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+
+        <h2>Usuários</h2>
+
+        <a
+            routerLink="/usuarios/novo"
+            class="btn btn-primary">
+
+            Novo Usuário
+
+        </a>
+
+    </div>
+
+    <div class="row mb-4">
+
+        <div class="col-md-6">
+
+            <label class="form-label">
+
+                Pesquisar por Nome
+
+            </label>
+
+            <input
+                type="text"
+                class="form-control"
+                [(ngModel)]="filtroNome"
+                (input)="pesquisar()">
+
+        </div>
+
+        <div class="col-md-6">
+
+            <label class="form-label">
+
+                Pesquisar por CPF
+
+            </label>
+
+            <input
+                type="text"
+                class="form-control"
+                mask="000.000.000-00"
+                [(ngModel)]="filtroCpf"
+                (input)="pesquisar()">
+
+        </div>
+
+    </div>
+
+    <table class="table table-bordered table-hover align-middle">
+
+        <thead class="table-light">
+
+            <tr>
+
+                <th>Nome</th>
+
+                <th>CPF</th>
+
+                <th>Nascimento</th>
+
+                <th>E-mail</th>
+
+                <th width="180">
+
+                    Ações
+
+                </th>
+
+            </tr>
+
+        </thead>
+
+        <tbody>
+
+            @for (usuario of usuarios; track usuario.id) {
+
+                <tr>
+
+                    <td>
+
+                        {{ usuario.nome }}
+
+                    </td>
+
+                    <td>
+
+                        {{ usuario.cpf | cpf }}
+
+                    </td>
+
+                    <td>
+
+                        {{ usuario.dataNascimento | data }}
+
+                    </td>
+
+                    <td>
+
+                        {{ usuario.email }}
+
+                    </td>
+
+                    <td>
+
+                        <button
+                            class="btn btn-warning btn-sm me-2"
+                            (click)="editar(usuario.id)">
+
+                            Editar
+
+                        </button>
+
+                        <button
+                            class="btn btn-danger btn-sm"
+                            (click)="excluir(usuario.id)">
+
+                            Excluir
+
+                        </button>
+
+                    </td>
+
+                </tr>
+
+            } @empty {
+
+                <tr>
+
+                    <td colspan="5" class="text-center">
+
+                        Nenhum usuário encontrado.
+
+                    </td>
+
+                </tr>
+
+            }
+
+        </tbody>
+
+    </table>
+
+    <div
+        class="d-flex justify-content-between align-items-center mt-4">
+
+        <div>
+
+            <strong>
+
+                Total de registros:
+
+            </strong>
+
+            {{ totalRegistros }}
+
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+
+            <button
+                class="btn btn-outline-secondary"
+                (click)="paginaAnterior()"
+                [disabled]="numeroPagina == 1">
+
+                Anterior
+
+            </button>
+
+            <span>
+
+                Página
+
+                <strong>
+
+                    {{ numeroPagina }}
+
+                </strong>
+
+                de
+
+                <strong>
+
+                    {{ totalPaginas }}
+
+                </strong>
+
+            </span>
+
+            <button
+                class="btn btn-outline-secondary"
+                (click)="proximaPagina()"
+                [disabled]="numeroPagina == totalPaginas">
+
+                Próxima
+
+            </button>
+
+        </div>
+
+    </div>
+
+</div>

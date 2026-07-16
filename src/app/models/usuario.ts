@@ -1,3 +1,4 @@
+// usuario.ts
 export interface Usuario {
 
   id: number;

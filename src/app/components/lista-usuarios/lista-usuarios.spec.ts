@@ -1,17 +1,18 @@
+// lista-usuario.spec.ts
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ListaUsuarios } from './lista-usuarios';
+import { ListaUsuariosComponent } from './lista-usuarios.component';
 
 describe('ListaUsuarios', () => {
-  let component: ListaUsuarios;
-  let fixture: ComponentFixture<ListaUsuarios>;
+  let component: ListaUsuariosComponent;
+  let fixture: ComponentFixture<ListaUsuariosComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [ListaUsuarios],
+      imports: [ListaUsuariosComponent],
     }).compileComponents();
 
-    fixture = TestBed.createComponent(ListaUsuarios);
+    fixture = TestBed.createComponent(ListaUsuariosComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
