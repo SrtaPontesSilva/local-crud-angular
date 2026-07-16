@@ -5,8 +5,8 @@
         <h2>Usuários</h2>
 
         <a
-            routerLink="/usuarios/novo"
-            class="btn btn-primary">
+            class="btn btn-primary"
+            [routerLink]="['/usuarios/novo']">
 
             Novo Usuário
 
@@ -52,6 +52,12 @@
     </div>
 
     <table class="table table-bordered table-hover align-middle">
+
+        <caption class="visually-hidden">
+
+            Lista de usuários cadastrados
+
+        </caption>
 
         <thead class="table-light">
 
@@ -133,7 +139,7 @@
 
                     <td colspan="5" class="text-center">
 
-                        Nenhum usuário encontrado.
+                        Nenhum usuário encontrado para os filtros informados.
 
                     </td>
 
@@ -165,7 +171,7 @@
             <button
                 class="btn btn-outline-secondary"
                 (click)="paginaAnterior()"
-                [disabled]="numeroPagina == 1">
+                [disabled]="primeiraPagina">
 
                 Anterior
 
@@ -194,7 +200,7 @@
             <button
                 class="btn btn-outline-secondary"
                 (click)="proximaPagina()"
-                [disabled]="numeroPagina == totalPaginas">
+                [disabled]="ultimaPagina">
 
                 Próxima
 

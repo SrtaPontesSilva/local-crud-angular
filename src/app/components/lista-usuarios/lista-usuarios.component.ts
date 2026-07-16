@@ -26,6 +26,8 @@ import { DataPipe } from '../../shared/data.pipe';
 })
 export class ListaUsuariosComponent implements OnInit {
 
+  readonly TAMANHO_PAGINA = 10;
+
   usuarios: Usuario[] = [];
 
   filtroNome = '';
@@ -34,7 +36,7 @@ export class ListaUsuariosComponent implements OnInit {
 
   numeroPagina = 1;
 
-  tamanhoPagina = 10;
+  tamanhoPagina = this.TAMANHO_PAGINA;
 
   totalRegistros = 0;
 
@@ -47,6 +49,14 @@ export class ListaUsuariosComponent implements OnInit {
 
   ngOnInit(): void {
     this.carregarUsuarios();
+  }
+
+  get primeiraPagina(): boolean {
+    return this.numeroPagina <= 1;
+  }
+
+  get ultimaPagina(): boolean {
+    return this.numeroPagina >= this.totalPaginas;
   }
 
   carregarUsuarios(): void {
@@ -96,15 +106,24 @@ export class ListaUsuariosComponent implements OnInit {
 
   excluir(id: number): void {
 
-    const confirmar = confirm(
-      'Deseja realmente excluir este usuário?'
-    );
-
-    if (!confirmar) {
+    if (!confirm(
+      'Tem certeza que deseja excluir este usuário?\n\nEsta ação não poderá ser desfeita.'
+    )) {
       return;
     }
 
     this.usuarioService.excluir(id);
+
+    if (
+      this.usuarios.length === 1 &&
+      this.numeroPagina > 1
+    ) {
+
+      this.numeroPagina--;
+
+    }
+
+    alert('Usuário excluído com sucesso.');
 
     this.carregarUsuarios();
 
@@ -112,7 +131,7 @@ export class ListaUsuariosComponent implements OnInit {
 
   paginaAnterior(): void {
 
-    if (this.numeroPagina === 1) {
+    if (this.primeiraPagina) {
       return;
     }
 
@@ -124,7 +143,7 @@ export class ListaUsuariosComponent implements OnInit {
 
   proximaPagina(): void {
 
-    if (this.numeroPagina >= this.totalPaginas) {
+    if (this.ultimaPagina) {
       return;
     }
 
