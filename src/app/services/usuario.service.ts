@@ -99,6 +99,36 @@ export class UsuarioService {
 
   }
 
+  private ordenar(
+    usuarios: Usuario[],
+    campo: 'nome' | 'cpf' | 'dataNascimento' | 'email',
+    direcao: 'asc' | 'desc'
+  ): Usuario[] {
+
+    const fator = direcao === 'asc' ? 1 : -1;
+
+    const ordenados = [...usuarios].sort((a, b) => {
+
+      if (campo === 'dataNascimento') {
+
+        // Convertido para AAAAMMDD para ordenar cronologicamente
+        // (a string bruta é DDMMAAAA, então comparar direto ordenaria
+        // pelo dia, não pela data real).
+        const chaveA = a.dataNascimento.slice(4) + a.dataNascimento.slice(2, 4) + a.dataNascimento.slice(0, 2);
+        const chaveB = b.dataNascimento.slice(4) + b.dataNascimento.slice(2, 4) + b.dataNascimento.slice(0, 2);
+
+        return chaveA.localeCompare(chaveB) * fator;
+
+      }
+
+      return a[campo].localeCompare(b[campo], 'pt-BR', { sensitivity: 'base' }) * fator;
+
+    });
+
+    return ordenados;
+
+  }
+
   // ==========================
   // CONSULTAS
   // ==========================
@@ -107,7 +137,9 @@ export class UsuarioService {
     numeroPagina: number,
     tamanhoPagina: number,
     nome: string,
-    cpf: string
+    cpf: string,
+    ordenarPor: 'nome' | 'cpf' | 'dataNascimento' | 'email' | null = null,
+    ordenarDirecao: 'asc' | 'desc' = 'asc'
   ): Paginacao<Usuario> {
 
     let resultado = [...this.usuarios];
@@ -129,6 +161,14 @@ export class UsuarioService {
       resultado = resultado.filter(usuario =>
         usuario.cpf.includes(cpfSemMascara)
       );
+
+    }
+
+    // Sem ordenarPor, mantém a ordem natural de cadastro (array já
+    // vem nessa ordem). Com ordenarPor, ordena pela coluna escolhida.
+    if (ordenarPor) {
+
+      resultado = this.ordenar(resultado, ordenarPor, ordenarDirecao);
 
     }
 

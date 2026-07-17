@@ -1,146 +1,123 @@
-<div class="container mt-5">
+<div class="page">
 
-    <div class="card shadow">
-
-        <div class="card-header">
-
-            <h3>
-
-                {{ modoEdicao ? 'Editar Usuário' : 'Cadastrar Usuário' }}
-
-            </h3>
-
+    <div class="page-header">
+        <div>
+            <h2>{{ modoEdicao ? 'Editar usuário' : 'Novo usuário' }}</h2>
+            <p>{{ modoEdicao ? 'Os dados de CPF não podem ser alterados após o cadastro.' : 'Preencha os dados abaixo para criar uma credencial de usuário.' }}</p>
         </div>
+    </div>
 
-        <div class="card-body">
+    <form [formGroup]="formulario" class="form-grid">
 
-            <form [formGroup]="formulario">
+        <div class="card">
+            <div class="card-body">
 
-                <div class="mb-3">
-
-                    <label class="form-label">
-
-                        Nome
-
-                    </label>
-
+                <div class="field" [class.invalid]="campoInvalido('nome')">
+                    <label for="nome">Nome completo</label>
                     <input
-                        class="form-control"
-                        formControlName="nome">
-
-                    @if(campoInvalido('nome')){
-
-                        <small class="text-danger">
-
-                            Informe um nome com pelo menos 3 caracteres.
-
-                        </small>
-
+                        id="nome"
+                        class="input"
+                        formControlName="nome"
+                        placeholder="Ex.: Maria Silva">
+                    @if (campoInvalido('nome')) {
+                        <small class="hint">Informe um nome com pelo menos 3 caracteres.</small>
                     }
-
                 </div>
 
-                <div class="mb-3">
-
-                    <label class="form-label">
-
-                        CPF
-
-                    </label>
-
+                <div class="field" [class.invalid]="campoInvalido('cpf')">
+                    <label for="cpf">CPF</label>
                     <input
-                        class="form-control"
+                        id="cpf"
+                        class="input mono"
                         mask="000.000.000-00"
                         formControlName="cpf"
-                        [readonly]="modoEdicao">
-
-                    @if(campoInvalido('cpf')){
-
-                        <small class="text-danger">
-
-                            Informe um CPF válido.
-
-                        </small>
-
+                        [readonly]="modoEdicao"
+                        placeholder="000.000.000-00">
+                    @if (campoInvalido('cpf')) {
+                        <small class="hint">Informe um CPF válido.</small>
                     }
-
                 </div>
 
-                <div class="mb-3">
-
-                    <label class="form-label">
-
-                        Data de Nascimento
-
-                    </label>
-
+                <div class="field" [class.invalid]="campoInvalido('dataNascimento')">
+                    <label for="dataNascimento">Data de nascimento</label>
                     <input
-                        class="form-control"
+                        id="dataNascimento"
+                        class="input mono"
                         mask="00/00/0000"
-                        formControlName="dataNascimento">
-
-                    @if(campoInvalido('dataNascimento')){
-
-                        <small class="text-danger">
-
-                            Informe a data de nascimento.
-
-                        </small>
-
+                        formControlName="dataNascimento"
+                        placeholder="00/00/0000">
+                    @if (campoInvalido('dataNascimento')) {
+                        <small class="hint">Informe a data de nascimento.</small>
                     }
-
                 </div>
 
-                <div class="mb-3">
-
-                    <label class="form-label">
-
-                        E-mail
-
-                    </label>
-
+                <div class="field" [class.invalid]="campoInvalido('email')">
+                    <label for="email">E-mail</label>
                     <input
+                        id="email"
                         type="email"
-                        class="form-control"
-                        formControlName="email">
-
-                    @if(campoInvalido('email')){
-
-                        <small class="text-danger">
-
-                            Informe um e-mail válido.
-
-                        </small>
-
+                        class="input"
+                        formControlName="email"
+                        placeholder="nome@email.com">
+                    @if (campoInvalido('email')) {
+                        <small class="hint">Informe um e-mail válido.</small>
                     }
-
                 </div>
 
-                <div class="d-flex gap-2">
-                    <button
-                        type="button"
-                        class="btn btn-primary"
-                        (click)="salvar()">
-
+                <div class="form-actions">
+                    <button type="button" class="btn btn-primary" (click)="salvar()">
                         Salvar
-
                     </button>
-
-                    <button
-                        type="button"
-                        class="btn btn-secondary"
-                        (click)="cancelar()">
-
+                    <button type="button" class="btn btn-secondary" (click)="cancelar()">
                         Cancelar
-
                     </button>
-
                 </div>
 
-            </form>
-
+            </div>
         </div>
 
-    </div>
+        <aside class="credential-preview">
+            <div class="credential-preview__eyebrow">Pré-visualização</div>
+
+            <div class="credential-preview__id">
+                <div class="avatar" [style.background]="getCorAvatar(formulario.get('nome')?.value)">
+                    {{ getIniciais(formulario.get('nome')?.value) }}
+                </div>
+                @if (formulario.get('nome')?.value) {
+                    <span class="name">{{ formulario.get('nome')?.value }}</span>
+                } @else {
+                    <span class="name placeholder">Nome do usuário</span>
+                }
+            </div>
+
+            <dl>
+                <div>
+                    <dt>CPF</dt>
+                    @if (formulario.get('cpf')?.value) {
+                        <dd>{{ formulario.get('cpf')?.value }}</dd>
+                    } @else {
+                        <dd class="placeholder">000.000.000-00</dd>
+                    }
+                </div>
+                <div>
+                    <dt>Nascimento</dt>
+                    @if (formulario.get('dataNascimento')?.value) {
+                        <dd>{{ formulario.get('dataNascimento')?.value }}</dd>
+                    } @else {
+                        <dd class="placeholder">00/00/0000</dd>
+                    }
+                </div>
+                <div style="grid-column: 1 / -1;">
+                    <dt>E-mail</dt>
+                    @if (formulario.get('email')?.value) {
+                        <dd>{{ formulario.get('email')?.value }}</dd>
+                    } @else {
+                        <dd class="placeholder">nome@email.com</dd>
+                    }
+                </div>
+            </dl>
+        </aside>
+
+    </form>
 
 </div>

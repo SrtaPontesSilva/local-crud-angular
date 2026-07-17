@@ -12,6 +12,16 @@ import { NgxMaskDirective } from 'ngx-mask';
 
 import { Usuario } from '../../models/usuario';
 import { UsuarioService } from '../../services/usuario.service';
+import { DialogService } from '../../shared/dialog-host/dialog.service';
+
+const CORES_AVATAR = [
+  '#2D3A6B',
+  '#0F9B8E',
+  '#6C63B5',
+  '#3E7CB1',
+  '#C98A2C',
+  '#B15A9A'
+];
 
 @Component({
   selector: 'app-cadastro-usuario',
@@ -34,7 +44,8 @@ export class CadastroUsuarioComponent implements OnInit {
     private fb: FormBuilder,
     private usuarioService: UsuarioService,
     private router: Router,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private dialogService: DialogService
   ) {
 
     this.formulario = this.fb.group({
@@ -131,9 +142,13 @@ export class CadastroUsuarioComponent implements OnInit {
 
         this.usuarioService.editar(usuario);
 
+        this.dialogService.toast('Usuário atualizado com sucesso.');
+
       } else {
 
         this.usuarioService.salvar(usuario);
+
+        this.dialogService.toast('Usuário cadastrado com sucesso.');
 
       }
 
@@ -143,7 +158,7 @@ export class CadastroUsuarioComponent implements OnInit {
 
       if (erro instanceof Error) {
 
-        alert(erro.message);
+        this.dialogService.toast(erro.message, 'erro');
 
       }
 
@@ -151,7 +166,22 @@ export class CadastroUsuarioComponent implements OnInit {
 
   }
 
-  cancelar(): void {
+  async cancelar(): Promise<void> {
+
+    if (this.formulario.dirty) {
+
+      const confirmado = await this.dialogService.confirm({
+        titulo: 'Descartar alterações?',
+        mensagem: 'Os dados preenchidos ainda não foram salvos e serão perdidos.',
+        textoConfirmar: 'Descartar',
+        variante: 'perigo'
+      });
+
+      if (!confirmado) {
+        return;
+      }
+
+    }
 
     this.router.navigate(['/usuarios']);
 
@@ -166,6 +196,39 @@ export class CadastroUsuarioComponent implements OnInit {
       campo.invalid &&
       campo.touched
     );
+
+  }
+
+  // ==========================
+  // AUXILIARES DE EXIBIÇÃO (prévia da credencial)
+  // ==========================
+
+  getIniciais(nome: string | null | undefined): string {
+
+    if (!nome || !nome.trim()) {
+      return '?';
+    }
+
+    const partes = nome.trim().split(/\s+/);
+
+    const primeira = partes[0]?.[0] ?? '';
+    const ultima = partes.length > 1 ? partes[partes.length - 1][0] : '';
+
+    return (primeira + ultima).toUpperCase();
+
+  }
+
+  getCorAvatar(nome: string | null | undefined): string {
+
+    if (!nome || !nome.trim()) {
+      return CORES_AVATAR[0];
+    }
+
+    const soma = nome
+      .split('')
+      .reduce((acc, char) => acc + char.charCodeAt(0), 0);
+
+    return CORES_AVATAR[soma % CORES_AVATAR.length];
 
   }
 

@@ -1,0 +1,55 @@
+@if (dialogService.confirmAtual(); as estado) {
+
+    <div class="app-modal-backdrop" (click)="dialogService.responderConfirm(false)">
+
+        <div
+            class="app-modal-card"
+            [class.perigo]="estado.variante === 'perigo'"
+            (click)="$event.stopPropagation()">
+
+            <h3>{{ estado.titulo }}</h3>
+            <p>{{ estado.mensagem }}</p>
+
+            <div class="app-modal-actions">
+                <button
+                    type="button"
+                    class="btn btn-secondary"
+                    (click)="dialogService.responderConfirm(false)">
+                    {{ estado.textoCancelar || 'Cancelar' }}
+                </button>
+
+                <button
+                    type="button"
+                    class="btn"
+                    [class.btn-danger]="estado.variante === 'perigo'"
+                    [class.btn-primary]="estado.variante !== 'perigo'"
+                    (click)="dialogService.responderConfirm(true)">
+                    {{ estado.textoConfirmar || 'Confirmar' }}
+                </button>
+            </div>
+
+        </div>
+
+    </div>
+
+}
+
+<div class="toast-stack">
+
+    @for (toast of dialogService.toasts(); track toast.id) {
+
+        <div class="toast" [class.toast--erro]="toast.tipo === 'erro'">
+
+            @if (toast.tipo === 'erro') {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="13"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            } @else {
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M20 6 9 17l-5-5"/></svg>
+            }
+
+            <span>{{ toast.mensagem }}</span>
+
+        </div>
+
+    }
+
+</div>

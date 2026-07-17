@@ -1,23 +1,27 @@
-// cadastro-usuario.spec.ts
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
+import { provideRouter } from '@angular/router';
+import { provideEnvironmentNgxMask } from 'ngx-mask';
 
 import { CadastroUsuarioComponent } from './cadastro-usuario.component';
 
 describe('CadastroUsuario', () => {
-  let component: CadastroUsuarioComponent;
-  let fixture: ComponentFixture<CadastroUsuarioComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CadastroUsuarioComponent],
+      providers: [
+        provideRouter([]),
+        provideEnvironmentNgxMask({
+          dropSpecialCharacters: false
+        })
+      ]
     }).compileComponents();
-
-    fixture = TestBed.createComponent(CadastroUsuarioComponent);
-    component = fixture.componentInstance;
-    await fixture.whenStable();
   });
 
   it('should create', () => {
+    const fixture = TestBed.createComponent(CadastroUsuarioComponent);
+    const component = fixture.componentInstance;
     expect(component).toBeTruthy();
   });
+
 });

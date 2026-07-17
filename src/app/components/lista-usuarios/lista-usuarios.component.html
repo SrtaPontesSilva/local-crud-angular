@@ -1,211 +1,173 @@
-<div class="container mt-5">
+<div class="page">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="page-header">
+        <div>
+            <h2>Usuários</h2>
+            <p>{{ totalRegistros }} registro(s) cadastrado(s)</p>
+        </div>
 
-        <h2>Usuários</h2>
-
-        <a
-            class="btn btn-primary"
-            [routerLink]="['/usuarios/novo']">
-
-            Novo Usuário
-
+        <a class="btn btn-primary" [routerLink]="['/usuarios/novo']">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Novo usuário
         </a>
-
     </div>
 
-    <div class="row mb-4">
+    <div class="toolbar">
 
-        <div class="col-md-6">
-
-            <label class="form-label">
-
-                Pesquisar por Nome
-
-            </label>
-
+        <div class="search-field">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input
                 type="text"
-                class="form-control"
+                class="input"
+                placeholder="Pesquisar por nome"
+                aria-label="Pesquisar por nome"
                 [(ngModel)]="filtroNome"
                 (input)="pesquisar()">
-
         </div>
 
-        <div class="col-md-6">
-
-            <label class="form-label">
-
-                Pesquisar por CPF
-
-            </label>
-
+        <div class="search-field">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
             <input
                 type="text"
-                class="form-control"
+                class="input mono"
                 mask="000.000.000-00"
+                placeholder="Pesquisar por CPF"
+                aria-label="Pesquisar por CPF"
                 [(ngModel)]="filtroCpf"
                 (input)="pesquisar()">
-
         </div>
 
     </div>
 
-    <table class="table table-bordered table-hover align-middle">
+    <div class="card">
 
-        <caption class="visually-hidden">
+        <div class="table-wrap">
+            <table class="roster-table">
 
-            Lista de usuários cadastrados
+                <caption class="visually-hidden">Lista de usuários cadastrados</caption>
 
-        </caption>
+                <colgroup>
+                    <col style="width: 32%;">
+                    <col style="width: 18%;">
+                    <col style="width: 15%;">
+                    <col style="width: 25%;">
+                    <col style="width: 10%;">
+                </colgroup>
 
-        <thead class="table-light">
+                <thead>
+                    <tr>
+                        <th>
+                            <button type="button" class="sort-btn" [class.active]="ordenarPor === 'nome'" [class.desc]="ordenarPor === 'nome' && ordenarDirecao === 'desc'" (click)="ordenarPorColuna('nome')">
+                                Usuário
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+                            </button>
+                        </th>
+                        <th>
+                            <button type="button" class="sort-btn" [class.active]="ordenarPor === 'cpf'" [class.desc]="ordenarPor === 'cpf' && ordenarDirecao === 'desc'" (click)="ordenarPorColuna('cpf')">
+                                CPF
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+                            </button>
+                        </th>
+                        <th>
+                            <button type="button" class="sort-btn" [class.active]="ordenarPor === 'dataNascimento'" [class.desc]="ordenarPor === 'dataNascimento' && ordenarDirecao === 'desc'" (click)="ordenarPorColuna('dataNascimento')">
+                                Nascimento
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+                            </button>
+                        </th>
+                        <th>
+                            <button type="button" class="sort-btn" [class.active]="ordenarPor === 'email'" [class.desc]="ordenarPor === 'email' && ordenarDirecao === 'desc'" (click)="ordenarPorColuna('email')">
+                                E-mail
+                                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="6 9 12 15 18 9"/></svg>
+                            </button>
+                        </th>
+                        <th class="col-acoes">Ações</th>
+                    </tr>
+                </thead>
 
-            <tr>
+                <tbody>
 
-                <th>Nome</th>
+                    @for (usuario of usuarios; track usuario.id) {
 
-                <th>CPF</th>
+                        <tr>
+                            <td>
+                                <div class="user-cell">
+                                    <div class="avatar" [style.background]="getCorAvatar(usuario.nome)">
+                                        {{ getIniciais(usuario.nome) }}
+                                    </div>
+                                    <span class="name">{{ usuario.nome }}</span>
+                                </div>
+                            </td>
 
-                <th>Nascimento</th>
+                            <td><span class="mono-chip">{{ usuario.cpf | cpf }}</span></td>
 
-                <th>E-mail</th>
+                            <td><span class="mono-chip">{{ usuario.dataNascimento | data }}</span></td>
 
-                <th width="180">
+                            <td>{{ usuario.email }}</td>
 
-                    Ações
+                            <td>
+                                <div class="actions-cell">
+                                    <button
+                                        type="button"
+                                        class="btn btn-warning-ghost btn-icon"
+                                        title="Editar"
+                                        aria-label="Editar usuário"
+                                        (click)="editar(usuario.id)">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/></svg>
+                                    </button>
+                                    <button
+                                        type="button"
+                                        class="btn btn-danger-ghost btn-icon"
+                                        title="Excluir"
+                                        aria-label="Excluir usuário"
+                                        (click)="excluir(usuario.id)">
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+                                    </button>
+                                </div>
+                            </td>
+                        </tr>
 
-                </th>
+                    } @empty {
 
-            </tr>
+                        <tr>
+                            <td colspan="5">
+                                <div class="empty-state">
+                                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>
+                                    <p>Nenhum usuário encontrado para os filtros informados.</p>
+                                </div>
+                            </td>
+                        </tr>
 
-        </thead>
+                    }
 
-        <tbody>
+                </tbody>
 
-            @for (usuario of usuarios; track usuario.id) {
-
-                <tr>
-
-                    <td>
-
-                        {{ usuario.nome }}
-
-                    </td>
-
-                    <td>
-
-                        {{ usuario.cpf | cpf }}
-
-                    </td>
-
-                    <td>
-
-                        {{ usuario.dataNascimento | data }}
-
-                    </td>
-
-                    <td>
-
-                        {{ usuario.email }}
-
-                    </td>
-
-                    <td>
-
-                        <button
-                            class="btn btn-warning btn-sm me-2"
-                            (click)="editar(usuario.id)">
-
-                            Editar
-
-                        </button>
-
-                        <button
-                            class="btn btn-danger btn-sm"
-                            (click)="excluir(usuario.id)">
-
-                            Excluir
-
-                        </button>
-
-                    </td>
-
-                </tr>
-
-            } @empty {
-
-                <tr>
-
-                    <td colspan="5" class="text-center">
-
-                        Nenhum usuário encontrado para os filtros informados.
-
-                    </td>
-
-                </tr>
-
-            }
-
-        </tbody>
-
-    </table>
-
-    <div
-        class="d-flex justify-content-between align-items-center mt-4">
-
-        <div>
-
-            <strong>
-
-                Total de registros:
-
-            </strong>
-
-            {{ totalRegistros }}
-
+            </table>
         </div>
 
-        <div class="d-flex align-items-center gap-2">
+        <div class="pagination-bar">
+            <div class="total">
+                Total: <strong>{{ totalRegistros }}</strong>
+            </div>
 
-            <button
-                class="btn btn-outline-secondary"
-                (click)="paginaAnterior()"
-                [disabled]="primeiraPagina">
+            <div class="pagination-controls">
+                <button
+                    class="btn btn-secondary"
+                    (click)="paginaAnterior()"
+                    [disabled]="primeiraPagina">
+                    Anterior
+                </button>
 
-                Anterior
+                <span class="page-indicator">
+                    <strong>{{ numeroPagina }}</strong> / {{ totalPaginas }}
+                </span>
 
-            </button>
-
-            <span>
-
-                Página
-
-                <strong>
-
-                    {{ numeroPagina }}
-
-                </strong>
-
-                de
-
-                <strong>
-
-                    {{ totalPaginas }}
-
-                </strong>
-
-            </span>
-
-            <button
-                class="btn btn-outline-secondary"
-                (click)="proximaPagina()"
-                [disabled]="ultimaPagina">
-
-                Próxima
-
-            </button>
-
+                <button
+                    class="btn btn-secondary"
+                    (click)="proximaPagina()"
+                    [disabled]="ultimaPagina">
+                    Próxima
+                </button>
+            </div>
         </div>
 
     </div>
