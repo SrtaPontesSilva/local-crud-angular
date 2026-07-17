@@ -19,7 +19,6 @@
     "@angular/router": "^22.0.0",
     "bootstrap": "^5.3.8",
     "ngx-mask": "^22.0.1",
-    "router": "^2.2.0",
     "rxjs": "~7.8.0",
     "tslib": "^2.3.0"
   },
